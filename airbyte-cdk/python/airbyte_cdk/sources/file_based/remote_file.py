@@ -16,3 +16,9 @@ class RemoteFile(ABC):
         self.uri = uri
         self.last_modified = last_modified
         self.file_type = file_type
+
+    def extension_agrees_with_file_type(self) -> bool:
+        extensions = self.uri.split(".")[1:]
+        if not extensions:
+            return True
+        return any(self.file_type.lower() in e.lower() for e in extensions)

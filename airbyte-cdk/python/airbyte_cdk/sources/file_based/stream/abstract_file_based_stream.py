@@ -9,10 +9,11 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional
 from airbyte_cdk.models import SyncMode
 from airbyte_cdk.sources.declarative.types import StreamSlice, StreamState
 from airbyte_cdk.sources.file_based.discovery_policy import AbstractDiscoveryPolicy
-from airbyte_cdk.sources.file_based.exceptions import UndefinedParserError
+from airbyte_cdk.sources.file_based.exceptions import FileBasedSourceError, UndefinedParserError
 from airbyte_cdk.sources.file_based.file_based_stream_reader import AbstractFileBasedStreamReader
 from airbyte_cdk.sources.file_based.file_types.file_type_parser import FileTypeParser
 from airbyte_cdk.sources.file_based.remote_file import RemoteFile
+from airbyte_cdk.sources.file_based.schema_validation_policies import AbstractSchemaValidationPolicies
 from airbyte_cdk.sources.file_based.stream.file_based_stream_config import FileBasedStreamConfig, PrimaryKeyType
 from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.availability_strategy import AvailabilityStrategy
@@ -41,6 +42,7 @@ class AbstractFileBasedStream(Stream):
         availability_strategy: AvailabilityStrategy,
         discovery_policy: AbstractDiscoveryPolicy,
         parsers: Dict[str, FileTypeParser],
+        validation_policies: AbstractSchemaValidationPolicies,
     ):
         super().__init__()
         self.config = config
@@ -49,6 +51,7 @@ class AbstractFileBasedStream(Stream):
         self._discovery_policy = discovery_policy
         self._availability_strategy = availability_strategy
         self._parsers = parsers
+        self._validation_policies = validation_policies
 
     @property
     @abstractmethod
@@ -100,7 +103,10 @@ class AbstractFileBasedStream(Stream):
         try:
             return self._parsers[file_type]
         except KeyError:
-            raise UndefinedParserError(f"No parser is defined for file type {file_type}.")
+            raise UndefinedParserError(FileBasedSourceError.UNDEFINED_PARSER, stream=self.name, file_type=file_type)
+
+    def record_passes_validation_policy(self, record: Mapping[str, Any]) -> bool:
+        return self._validation_policies.record_passes_validation_policy(self.config.validation_policy, record, self.get_json_schema())
 
     @cached_property
     def availability_strategy(self):
