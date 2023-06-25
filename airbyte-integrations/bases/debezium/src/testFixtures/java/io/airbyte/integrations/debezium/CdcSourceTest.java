@@ -411,9 +411,9 @@ public abstract class CdcSourceTest {
     final List<AirbyteMessage> dataFromFirstBatch = AutoCloseableIterators
         .toListAndClose(firstBatchIterator);
     final List<AirbyteStateMessage> stateAfterFirstBatch = extractStateMessages(dataFromFirstBatch);
-//    assertEquals(1, stateAfterFirstBatch.size());
-//    assertNotNull(stateAfterFirstBatch.get(0).getData());
-//    assertExpectedStateMessages(stateAfterFirstBatch);
+    // assertEquals(1, stateAfterFirstBatch.size());
+    // assertNotNull(stateAfterFirstBatch.get(0).getData());
+    // assertExpectedStateMessages(stateAfterFirstBatch);
     final Set<AirbyteRecordMessage> recordsFromFirstBatch = extractRecordMessages(
         dataFromFirstBatch);
     assertEquals((MODEL_RECORDS.size() + recordsToCreate), recordsFromFirstBatch.size());
@@ -427,16 +427,16 @@ public abstract class CdcSourceTest {
       writeModelRecord(record);
     }
 
-    final JsonNode state = Jsons.jsonNode(Collections.singletonList(stateAfterFirstBatch.get(stateAfterFirstBatch.size()-1)));
+    final JsonNode state = Jsons.jsonNode(Collections.singletonList(stateAfterFirstBatch.get(stateAfterFirstBatch.size() - 1)));
     final AutoCloseableIterator<AirbyteMessage> secondBatchIterator = getSource()
         .read(getConfig(), CONFIGURED_CATALOG, state);
     final List<AirbyteMessage> dataFromSecondBatch = AutoCloseableIterators
         .toListAndClose(secondBatchIterator);
 
     final List<AirbyteStateMessage> stateAfterSecondBatch = extractStateMessages(dataFromSecondBatch);
-//    assertEquals(1, stateAfterSecondBatch.size());
-//    assertNotNull(stateAfterSecondBatch.get(0).getData());
-//    assertExpectedStateMessages(stateAfterSecondBatch);
+    // assertEquals(1, stateAfterSecondBatch.size());
+    // assertNotNull(stateAfterSecondBatch.get(0).getData());
+    // assertExpectedStateMessages(stateAfterSecondBatch);
 
     final Set<AirbyteRecordMessage> recordsFromSecondBatch = extractRecordMessages(
         dataFromSecondBatch);
@@ -549,7 +549,7 @@ public abstract class CdcSourceTest {
 
     final Set<AirbyteRecordMessage> recordMessages = extractRecordMessages(actualRecords);
     final List<AirbyteStateMessage> stateMessages = extractStateMessages(actualRecords);
-// fails for ctid
+    // fails for ctid
     assertExpectedRecords(Collections.emptySet(), recordMessages);
     assertEquals(1, stateMessages.size());
     assertNotNull(stateMessages.get(0).getData());
@@ -562,7 +562,7 @@ public abstract class CdcSourceTest {
     final AutoCloseableIterator<AirbyteMessage> read1 = getSource()
         .read(getConfig(), CONFIGURED_CATALOG, null);
     final List<AirbyteMessage> actualRecords1 = AutoCloseableIterators.toListAndClose(read1);
-    //Fix state for ctid
+    // Fix state for ctid
     final JsonNode state = Jsons.jsonNode(extractStateMessages(actualRecords1));
 
     final AutoCloseableIterator<AirbyteMessage> read2 = getSource()
@@ -605,18 +605,22 @@ public abstract class CdcSourceTest {
     final Set<AirbyteRecordMessage> recordsFromFirstBatch = extractRecordMessages(
         dataFromFirstBatch);
     final List<AirbyteStateMessage> stateAfterFirstBatch = extractStateMessages(dataFromFirstBatch);
-//    assertEquals(1, stateAfterFirstBatch.size());
+    // assertEquals(1, stateAfterFirstBatch.size());
 
-//    final AirbyteStateMessage stateMessageEmittedAfterFirstSyncCompletion = stateAfterFirstBatch.get(0);
-//    assertEquals(AirbyteStateMessage.AirbyteStateType.GLOBAL, stateMessageEmittedAfterFirstSyncCompletion.getType());
-//    assertNotNull(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState());
-//    final Set<StreamDescriptor> streamsInStateAfterFirstSyncCompletion = stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getStreamStates()
-//        .stream()
-//        .map(AirbyteStreamState::getStreamDescriptor)
-//        .collect(Collectors.toSet());
-//    assertEquals(1, streamsInStateAfterFirstSyncCompletion.size());
-//    assertTrue(streamsInStateAfterFirstSyncCompletion.contains(new StreamDescriptor().withName(MODELS_STREAM_NAME).withNamespace(MODELS_SCHEMA)));
-//    assertNotNull(stateMessageEmittedAfterFirstSyncCompletion.getData());
+    // final AirbyteStateMessage stateMessageEmittedAfterFirstSyncCompletion =
+    // stateAfterFirstBatch.get(0);
+    // assertEquals(AirbyteStateMessage.AirbyteStateType.GLOBAL,
+    // stateMessageEmittedAfterFirstSyncCompletion.getType());
+    // assertNotNull(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState());
+    // final Set<StreamDescriptor> streamsInStateAfterFirstSyncCompletion =
+    // stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getStreamStates()
+    // .stream()
+    // .map(AirbyteStreamState::getStreamDescriptor)
+    // .collect(Collectors.toSet());
+    // assertEquals(1, streamsInStateAfterFirstSyncCompletion.size());
+    // assertTrue(streamsInStateAfterFirstSyncCompletion.contains(new
+    // StreamDescriptor().withName(MODELS_STREAM_NAME).withNamespace(MODELS_SCHEMA)));
+    // assertNotNull(stateMessageEmittedAfterFirstSyncCompletion.getData());
 
     assertEquals((MODEL_RECORDS.size()), recordsFromFirstBatch.size());
     assertExpectedRecords(new HashSet<>(MODEL_RECORDS), recordsFromFirstBatch);
@@ -664,8 +668,8 @@ public abstract class CdcSourceTest {
 
     final AirbyteStateMessage stateMessageEmittedAfterSnapshotCompletionInSecondSync = stateAfterSecondBatch.get(0);
     assertEquals(AirbyteStateMessage.AirbyteStateType.GLOBAL, stateMessageEmittedAfterSnapshotCompletionInSecondSync.getType());
-//    assertEquals(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState(),
-//        stateMessageEmittedAfterSnapshotCompletionInSecondSync.getGlobal().getSharedState());
+    // assertEquals(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState(),
+    // stateMessageEmittedAfterSnapshotCompletionInSecondSync.getGlobal().getSharedState());
     final Set<StreamDescriptor> streamsInSnapshotState = stateMessageEmittedAfterSnapshotCompletionInSecondSync.getGlobal().getStreamStates()
         .stream()
         .map(AirbyteStreamState::getStreamDescriptor)
@@ -678,8 +682,8 @@ public abstract class CdcSourceTest {
 
     final AirbyteStateMessage stateMessageEmittedAfterSecondSyncCompletion = stateAfterSecondBatch.get(1);
     assertEquals(AirbyteStateMessage.AirbyteStateType.GLOBAL, stateMessageEmittedAfterSecondSyncCompletion.getType());
-//    assertNotEquals(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState(),
-//        stateMessageEmittedAfterSecondSyncCompletion.getGlobal().getSharedState());
+    // assertNotEquals(stateMessageEmittedAfterFirstSyncCompletion.getGlobal().getSharedState(),
+    // stateMessageEmittedAfterSecondSyncCompletion.getGlobal().getSharedState());
     final Set<StreamDescriptor> streamsInSyncCompletionState = stateMessageEmittedAfterSecondSyncCompletion.getGlobal().getStreamStates()
         .stream()
         .map(AirbyteStreamState::getStreamDescriptor)
